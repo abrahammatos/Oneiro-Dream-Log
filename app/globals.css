@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .card {
+    @apply bg-white dark:bg-dream-surface border-2 border-dream-purple/10 dark:border-dream-purple rounded-3xl p-5 shadow-sm;
+  }
+}
