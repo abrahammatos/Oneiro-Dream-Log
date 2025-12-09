@@ -52,6 +52,26 @@ export interface Dream {
   imageUrl?: string;
 }
 
+interface CustomInputProps {
+  placeholder?: string;
+  value?: string;
+  onChangeText?: (text: string) => void;
+  label: string;
+  secureTextEntry?: boolean;
+  keyboardType?: "default" | "email-address" | "numeric" | "phone-pad";
+}
+
+interface CustomButtonProps {
+  onPress?: () => void;
+  title?: string;
+  style?: StyleProp<ViewStyle>;
+  variant?: "primary" | "secondary" | "danger" | "ghost" | "premium";
+  leftIcon?: React.ReactNode;
+  textStyle?: string;
+  isLoading?: boolean;
+  disabled?: boolean;
+}
+
 export type ThemeColor = "dark" | "purple" | "blue" | "lilac" | "light";
 
 export const MOCK_USER: User = {

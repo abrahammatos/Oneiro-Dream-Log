@@ -2,5 +2,33 @@
   "reality_check_title": "Teste de Realidade",
   "reality_check_question": "Você está sonhando agora?",
   "reality_check_btn": "VERIFICAR",
-  "reality_check_confirmed": "Realidade Confirmada: Você está acordado."
+  "reality_check_confirmed": "Realidade Confirmada: Você está acordado.",
+  "sign_in": {
+    "unlock_your_sub": "Desbloqueie seu subconsciente.",
+    "email_label": "Seu Email",
+    "email_placeholder": "Digite seu Email...",
+    "password_label": "Senha",
+    "login_btn": "Entrar no Mundo dos Sonhos",
+    "or": "OU",
+    "google_btn": "Continuar com Google",
+    "no_account": "Não tem uma conta?",
+    "create_account": "Criar um novo diário"
+  },
+  "sign_up": {
+    "title": "Junte-se ao Oneiro",
+    "subtitle": "Comece sua jornada.",
+    "error_missing_fields": "Por favor, preencha todos os campos.",
+    "error_password_match": "As senhas não coincidem.",
+    "name_label": "Nome Completo",
+    "name_placeholder": "ex: Alice Silva",
+    "username_label": "Nome de usuário",
+    "email_label": "E-mail",
+    "password_label": "Senha",
+    "confirm_label": "Confirmar",
+    "btn_submit": "Cadastrar",
+    "or": "OU",
+    "btn_google": "Cadastrar com Google",
+    "already_have_account": "Já tem uma conta?",
+    "login_link": "Entre aqui"
+  }
 }

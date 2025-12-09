@@ -2,5 +2,33 @@
   "reality_check_title": "Reality Check",
   "reality_check_question": "Are you dreaming right now?",
   "reality_check_btn": "CHECK",
-  "reality_check_confirmed": "Reality Confirmed: You are awake."
+  "reality_check_confirmed": "Reality Confirmed: You are awake.",
+  "sign_in": {
+    "unlock_your_sub": "Unlock your subconscious.",
+    "email_label": "Email",
+    "email_placeholder": "Enter your email...",
+    "password_label": "Password",
+    "login_btn": "Enter Dream World",
+    "or": "OR",
+    "google_btn": "Continue with Google",
+    "no_account": "Don't have an account?",
+    "create_account": "Create a new journal"
+  },
+  "sign_up": {
+    "title": "Join Oneiro",
+    "subtitle": "Begin your journey.",
+    "error_missing_fields": "Please fill in all fields.",
+    "error_password_match": "Passwords do not match.",
+    "name_label": "Full Name",
+    "name_placeholder": "e.g. Alice Walker",
+    "username_label": "Username",
+    "email_label": "Email",
+    "password_label": "Password",
+    "confirm_label": "Confirm",
+    "btn_submit": "Sign Up",
+    "or": "OR",
+    "btn_google": "Sign up with Google",
+    "already_have_account": "Already have an account?",
+    "login_link": "Log in here"
+  }
 }
