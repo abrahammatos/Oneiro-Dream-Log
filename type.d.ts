@@ -12,7 +12,7 @@ export interface User {
   isPro: boolean;
   streak: number;
   bedtime?: string;
-  settings: AppSettings;
+  settings?: AppSettings;
 }
 
 export interface Achievement {
