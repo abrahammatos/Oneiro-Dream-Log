@@ -1,6 +1,7 @@
 import CustomButton from "@/components/CustomButton";
 import CustomInput from "@/components/CustomInput";
 import { images } from "@/constants";
+import { signIn } from "@/lib/appwrite";
 import { AntDesign } from "@expo/vector-icons";
 import { Link, router } from "expo-router";
 import React, { useState } from "react";
@@ -11,19 +12,19 @@ import Animated, { FadeInDown } from "react-native-reanimated";
 export default function SignIn() {
   const { t } = useTranslation();
 
-  const [isLoading, setIsLoading] = useState(false);
-
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState({ email: "", password: "" });
 
   const submit = async () => {
-    if (!form.email || !form.password)
+    const { email, password } = form;
+
+    if (!email || !password)
       return Alert.alert("Error", "Please enter valid Email address.");
 
     setIsSubmitting(true);
 
     try {
-      Alert.alert("Success", "User signed in successfully.");
+      await signIn({ email, password });
       router.replace("/");
     } catch (error: any) {
       Alert.alert("Error", error.message);
@@ -33,9 +34,9 @@ export default function SignIn() {
   };
 
   const handleGoogleLogin = () => {
-    setIsLoading(true);
+    setIsSubmitting(true);
     setTimeout(() => {
-      setIsLoading(false);
+      setIsSubmitting(false);
       console.log("Google Login");
       router.replace("/");
     }, 1500);

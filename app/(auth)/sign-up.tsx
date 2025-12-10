@@ -1,5 +1,6 @@
 import CustomButton from "@/components/CustomButton";
 import CustomInput from "@/components/CustomInput";
+import { createUser } from "@/lib/appwrite";
 import { AntDesign } from "@expo/vector-icons";
 import { Link, router } from "expo-router";
 import React, { useState } from "react";
@@ -8,9 +9,9 @@ import { Text, View } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 
 export default function SignUp() {
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const { t } = useTranslation();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [form, setForm] = useState({
     name: "",
@@ -23,41 +24,41 @@ export default function SignUp() {
   const handleRegister = async () => {
     setError("");
 
-    if (
-      !form.name ||
-      !form.username ||
-      !form.email ||
-      !form.password ||
-      !form.confirmPassword
-    ) {
+    const { name, username, email, password, confirmPassword } = form;
+
+    if (!name || !username || !email || !password || !confirmPassword) {
       setError(t("sign_up.error_missing_fields"));
       return;
     }
 
-    if (form.password !== form.confirmPassword) {
+    if (password !== confirmPassword) {
       setError(t("sign_up.error_password_match"));
       return;
     }
 
-    setIsLoading(true);
+    setIsSubmitting(true);
 
     try {
-      // Simulação de API
-      setTimeout(() => {
-        setIsLoading(false);
-        console.log("Registrado:", form);
-        router.replace("/"); // Vai para a Home
-      }, 1500);
+      await createUser({
+        name,
+        username,
+        email,
+        password,
+      });
+
+      router.replace("/");
     } catch (err: any) {
-      setIsLoading(false);
+      setIsSubmitting(false);
       setError(err.message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleGoogleSignup = () => {
-    setIsLoading(true);
+    setIsSubmitting(true);
     setTimeout(() => {
-      setIsLoading(false);
+      setIsSubmitting(false);
       console.log("Google Signup");
       router.replace("/");
     }, 1500);
@@ -141,7 +142,7 @@ export default function SignUp() {
           <CustomButton
             title={t("sign_up.btn_submit")}
             onPress={handleRegister}
-            isLoading={isLoading}
+            isLoading={isSubmitting}
             variant="primary"
           />
 

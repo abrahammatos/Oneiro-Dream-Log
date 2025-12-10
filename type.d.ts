@@ -72,6 +72,18 @@ interface CustomButtonProps {
   disabled?: boolean;
 }
 
+interface CreateUserParams {
+  name: string;
+  username: string;
+  email: string;
+  password: string;
+}
+
+interface SignInParams {
+  email: string;
+  password: string;
+}
+
 export type ThemeColor = "dark" | "purple" | "blue" | "lilac" | "light";
 
 export const MOCK_USER: User = {
