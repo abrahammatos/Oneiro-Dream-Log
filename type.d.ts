@@ -1,3 +1,5 @@
+import { Feather } from "@expo/vector-icons";
+
 export interface AppSettings {
   language: "en" | "pt" | "es";
   theme: "light" | "dark";
@@ -46,6 +48,7 @@ export interface Dream {
   hasLiked?: boolean;
   comments: Comment[];
   analysis?: string;
+  language?: "en" | "pt" | "es";
   mood?: string;
   isLucid?: boolean;
   clarity?: number;
@@ -84,6 +87,10 @@ interface SignInParams {
   password: string;
 }
 
+interface TabIconProps {
+  focused: boolean;
+  name: keyof typeof Feather.glyphMap;
+}
 export type ThemeColor = "dark" | "purple" | "blue" | "lilac" | "light";
 
 export const MOCK_USER: User = {
