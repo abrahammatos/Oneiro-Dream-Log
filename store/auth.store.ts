@@ -1,6 +1,7 @@
-import { getCurrentUser } from "@/lib/appwrite";
+import { getCurrentUser, supabase } from "@/lib/supabase";
 import { User } from "@/type";
 import { create } from "zustand";
+
 type AuthState = {
   isAuthenticated: boolean;
   user: User | null;
@@ -11,6 +12,7 @@ type AuthState = {
   setLoading: (loading: boolean) => void;
 
   fetchAuthenticatedUser: () => Promise<void>;
+  logout: () => Promise<void>; // Nova função tipada
 };
 
 const useAuthStore = create<AuthState>((set) => ({
@@ -36,6 +38,21 @@ const useAuthStore = create<AuthState>((set) => ({
     } catch (error) {
       console.log("fetchAuthenticatedUser error", error);
       set({ isAuthenticated: false, user: null });
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  logout: async () => {
+    set({ isLoading: true });
+    try {
+      // 1. Limpa a sessão no Supabase e no AsyncStorage
+      await supabase.auth.signOut();
+
+      // 2. Limpa o estado global do App
+      set({ user: null, isAuthenticated: false });
+    } catch (error) {
+      console.log("Logout error", error);
     } finally {
       set({ isLoading: false });
     }

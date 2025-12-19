@@ -2,95 +2,171 @@ import { DreamCard } from "@/components/Dreamcard";
 import Filter from "@/components/Filter";
 import HeaderHome from "@/components/HeaderHome";
 import RealityCheckWidget from "@/components/RealityCheckWidget";
+import i18n from "@/lib/i18n";
+import { fetchDreamsFeed, toggleDreamLike } from "@/services/dreamService";
+import useAuthStore from "@/store/auth.store";
 import { Dream } from "@/type";
 import { FlashList } from "@shopify/flash-list";
-import { View } from "react-native";
+import { useCallback, useEffect, useState } from "react";
+import { ActivityIndicator, RefreshControl, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-// --- Mock Data Initialization ---
-const INITIAL_DREAMS: Dream[] = [
-  {
-    id: "d1",
-    userId: "u2",
-    authorName: "LunaLove",
-    authorAvatar: "https://picsum.photos/seed/luna/200/200",
-    title: "Flying over a neon city",
-    description:
-      "I was flying like a bird over a city made of neon lights. The wind felt warm.",
-    date: new Date().toISOString(),
-    visibility: "public",
-    tags: ["Flying", "Neon", "City"],
-    likes: 42,
-    hasLiked: false,
-    mood: "Excited",
-    isLucid: true,
-    clarity: 5,
-    comments: [
-      {
-        id: "c1",
-        userId: "u1",
-        authorName: "DreamWalker",
-        authorAvatar: "https://picsum.photos/seed/user1/200/200",
-        text: "Wow, I had a similar dream last week!",
-        date: new Date().toISOString(),
-      },
-    ],
-    imageUrl:
-      "https://image.pollinations.ai/prompt/neon%20city%20dream%20flying%20cyberpunk?width=800&height=600&nologo=true",
-  },
-  {
-    id: "d2",
-    userId: "u1",
-    authorName: "DreamWalker",
-    authorAvatar: "https://picsum.photos/seed/user1/200/200",
-    title: "Lost in a library",
-    description:
-      "Infinite rows of books, but none of them had titles on the spine. I was looking for something specific but forgot what it was.",
-    date: new Date(Date.now() - 86400000).toISOString(),
-    visibility: "public",
-    tags: ["Books", "Mystery", "Lost"],
-    likes: 12,
-    hasLiked: false,
-    mood: "Confused",
-    isLucid: false,
-    clarity: 3,
-    comments: [],
-  },
-  {
-    id: "d3",
-    userId: "u1",
-    authorName: "DreamWalker",
-    authorAvatar: "https://picsum.photos/seed/user1/200/200",
-    title: "Late for Exam",
-    description:
-      "I arrived at school but realized I was wearing pajamas and didn't study for the math test.",
-    date: new Date(Date.now() - 172800000).toISOString(),
-    visibility: "private",
-    tags: ["Anxiety", "School", "Embarrassment"],
-    likes: 0,
-    hasLiked: false,
-    mood: "Anxious",
-    isLucid: false,
-    clarity: 4,
-    comments: [],
-  },
-];
+const PAGE_SIZE = 10;
 
 export default function Index() {
+  const { user, isAuthenticated } = useAuthStore();
+  const [dreams, setDreams] = useState<Dream[]>([]);
+  const [filter, setFilter] = useState<"recent" | "popular">("recent");
+
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+
+  const loadDreams = useCallback(
+    async (
+      pageNumber: number,
+      shouldRefresh = false,
+      currentFilter = filter
+    ) => {
+      if (!shouldRefresh && !hasMore) return;
+
+      try {
+        if (shouldRefresh) setLoading(true);
+
+        const offset = pageNumber * PAGE_SIZE;
+
+        const deviceLang = i18n.language ? i18n.language.split("-")[0] : "en";
+
+        const newData = await fetchDreamsFeed(
+          user?.id,
+          deviceLang, // Enviamos o idioma do celular
+          currentFilter,
+          PAGE_SIZE,
+          offset
+        );
+
+        if (shouldRefresh) {
+          setDreams(newData);
+        } else {
+          setDreams((prev) => [...prev, ...newData]);
+        }
+
+        setHasMore(newData.length >= PAGE_SIZE);
+      } catch (error) {
+        console.error("Erro ao carregar sonhos:", error);
+      } finally {
+        setLoading(false);
+        setRefreshing(false);
+      }
+    },
+    // Adicione i18n.language nas dependências para recarregar se o idioma mudar
+    [user?.id, filter, i18n.language]
+  );
+
+  // --- Efeitos ---
+
+  useEffect(() => {
+    loadDreams(0, true, "recent");
+  }, [user?.id, i18n.language]); // Recarrega se mudar o idioma
+
+  // ... (Restante do código: handleFilterChange, handleToggleLike, etc, continua igual)
+
+  // ... Mantendo o restante do código igual para economizar espaço ...
+
+  // Apenas certifique-se que as funções abaixo estão no seu arquivo:
+  const handleFilterChange = (newFilter: "recent" | "popular") => {
+    if (newFilter === filter) return;
+    setFilter(newFilter);
+    setPage(0);
+    setHasMore(true);
+    setDreams([]);
+    loadDreams(0, true, newFilter);
+  };
+
+  const handleToggleLike = async (dreamId: string) => {
+    if (!isAuthenticated || !user?.id) return;
+    setDreams((currentDreams) =>
+      currentDreams.map((dream) => {
+        if (dream.id === dreamId) {
+          const isLiking = !dream.hasLiked;
+          return {
+            ...dream,
+            hasLiked: isLiking,
+            likes: isLiking ? dream.likes + 1 : dream.likes - 1,
+          };
+        }
+        return dream;
+      })
+    );
+    try {
+      await toggleDreamLike(dreamId, user.id);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    setPage(0);
+    setHasMore(true);
+    loadDreams(0, true, filter);
+  };
+
+  const handleEndReached = () => {
+    if (!loading && hasMore) {
+      const nextPage = page + 1;
+      setPage(nextPage);
+      loadDreams(nextPage, false, filter);
+    }
+  };
+
   return (
     <SafeAreaView className="flex-1 dark:bg-dream-dark">
       <FlashList<Dream>
-        data={INITIAL_DREAMS}
-        renderItem={({ item }) => <DreamCard item={item} />}
+        data={dreams}
+        renderItem={({ item }) => (
+          <DreamCard
+            item={item}
+            onToggleLike={() => handleToggleLike(item.id)}
+          />
+        )}
         contentContainerStyle={{ paddingVertical: 20 }}
+        contentContainerClassName="pb-32"
+        onEndReached={handleEndReached}
+        onEndReachedThreshold={0.5}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#4F46E5"
+            colors={["#4F46E5"]}
+          />
+        }
         ListHeaderComponent={() => (
           <View>
-            <HeaderHome />
+            <HeaderHome streak={user?.streak || 0} />
             <RealityCheckWidget />
-            <Filter />
+            <Filter activeFilter={filter} onChangeFilter={handleFilterChange} />
           </View>
         )}
+        ListFooterComponent={() =>
+          loading && !refreshing && dreams.length > 0 ? (
+            <View className="py-6">
+              <ActivityIndicator size="small" color="#4F46E5" />
+            </View>
+          ) : null
+        }
+        ListEmptyComponent={() =>
+          !loading ? (
+            <View className="items-center py-20 px-6 opacity-60">
+              <Text className="text-slate-800 dark:text-dream-light font-bold text-center">
+                Nada por aqui... 😴
+              </Text>
+            </View>
+          ) : null
+        }
       />
-    </SafeAreaView> //
+    </SafeAreaView>
   );
 }

@@ -1,33 +1,50 @@
 import CustomButton from "@/components/CustomButton";
 import CustomInput from "@/components/CustomInput";
 import { images } from "@/constants";
-import { signIn } from "@/lib/appwrite";
+import { getCurrentUser, signIn } from "@/lib/supabase";
+import useAuthStore from "@/store/auth.store";
 import { AntDesign } from "@expo/vector-icons";
 import { Link, router } from "expo-router";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Alert, Image, Text, View } from "react-native";
+import { Image, Text, View } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 
 export default function SignIn() {
   const { t } = useTranslation();
 
+  // 1. Adicionado estado de erro visual
+  const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState({ email: "", password: "" });
+  const { setUser, setIsAuthenticated } = useAuthStore();
 
   const submit = async () => {
+    setError(""); // Limpa erros anteriores
     const { email, password } = form;
 
-    if (!email || !password)
-      return Alert.alert("Error", "Please enter valid Email address.");
+    if (!email || !password) {
+      setError("Please enter valid Email and Password."); // Define erro no estado
+      return;
+    }
 
     setIsSubmitting(true);
 
     try {
       await signIn({ email, password });
-      router.replace("/");
+
+      const result = await getCurrentUser();
+
+      if (result) {
+        setUser(result as any);
+        setIsAuthenticated(true);
+        router.replace("/");
+      } else {
+        setError("Erro ao recuperar dados do usuário.");
+      }
     } catch (error: any) {
-      Alert.alert("Error", error.message);
+      // Define a mensagem de erro para aparecer na tela
+      setError(error.message || "Failed to sign in");
     } finally {
       setIsSubmitting(false);
     }
@@ -63,6 +80,15 @@ export default function SignIn() {
         {/* --- Form Section --- */}
         <View className="space-y-4">
           <View className="bg-dream-surface/50 border border-dream-purple/30 rounded-3xl p-6 shadow-xl mb-6">
+            {/* 2. Bloco de Erro Visual (Igual ao SignUp) */}
+            {error ? (
+              <View className="bg-red-500/20 border border-red-500/30 p-3 rounded-xl mb-4">
+                <Text className="text-red-200 text-sm text-center font-medium">
+                  {error}
+                </Text>
+              </View>
+            ) : null}
+
             <CustomInput
               label={t("sign_in.email_label")}
               placeholder={t("sign_in.email_placeholder")}

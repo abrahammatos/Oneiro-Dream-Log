@@ -4,7 +4,11 @@ import { useColorScheme } from "nativewind";
 import React from "react";
 import { Text, View } from "react-native";
 
-const HeaderHome = () => {
+interface Streak {
+  streak: number;
+}
+
+const HeaderHome = ({ streak }: Streak) => {
   const { colorScheme } = useColorScheme();
   5;
   const iconColor = colorScheme === "dark" ? "#facc15" : "#eab308";
@@ -18,7 +22,7 @@ const HeaderHome = () => {
       <View className="bg-white dark:bg-dream-purple/30 p-2 px-3 gap-2 rounded-2xl border border-dream-purple/20 dark:border-dream-purple/50 flex flex-row items-center space-x-2 shadow-sm dark:shadow-[0_4px_0_0_rgba(60,42,77,0.5)]">
         <FontAwesome name="star" size={18} color={iconColor} />
         <Text className="text-dream-purple dark:text-dream-lilac font-bold text-sm">
-          12
+          {streak}
         </Text>
       </View>
     </View>

@@ -6,6 +6,9 @@ export interface AppSettings {
   notifications: boolean;
 }
 
+export type Visibility = "public" | "private" | "friends_only";
+export type InteractionType = "like" | "bookmark";
+
 export interface User {
   id: string;
   name: string;
@@ -15,6 +18,19 @@ export interface User {
   streak: number;
   bedtime?: string;
   settings?: AppSettings;
+}
+
+export interface Profile {
+  id: string; // UUID da tabela profiles
+  user_id: string; // UUID do Auth (Supabase Auth)
+  name: string;
+  username: string;
+  bio?: string;
+  avatar?: string;
+  is_pro: boolean;
+  streak: number;
+  bedtime?: string;
+  created_at: string;
 }
 
 export interface Achievement {
@@ -27,13 +43,14 @@ export interface Achievement {
 
 export interface Comment {
   id: string;
-  userId: string;
-  authorName: string;
-  authorAvatar: string;
+  author_id: string;
+  dream_id: string;
   text: string;
-  date: string;
+  created_at: string;
+  author?: Profile; // Para exibir o nome/foto de quem comentou
 }
 
+// type.ts
 export interface Dream {
   id: string;
   userId: string;
@@ -44,15 +61,11 @@ export interface Dream {
   date: string;
   visibility: "public" | "private";
   tags: string[];
-  likes: number;
-  hasLiked?: boolean;
-  comments: Comment[];
-  analysis?: string;
-  language?: "en" | "pt" | "es";
-  mood?: string;
-  isLucid?: boolean;
-  clarity?: number;
   imageUrl?: string;
+  likes: number;
+  hasLiked: boolean;
+  commentsCount: number;
+  language?: string;
 }
 
 interface CustomInputProps {
@@ -63,6 +76,18 @@ interface CustomInputProps {
   secureTextEntry?: boolean;
   keyboardType?: "default" | "email-address" | "numeric" | "phone-pad";
 }
+export interface Interaction {
+  id: string;
+  user_id: string;
+  dream_id: string;
+  type: InteractionType;
+  created_at: string;
+}
+
+type FilterProps = {
+  activeFilter: "recent" | "popular";
+  onChangeFilter: (filter: "recent" | "popular") => void;
+};
 
 interface CustomButtonProps {
   onPress?: () => void;

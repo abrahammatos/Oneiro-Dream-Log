@@ -1,6 +1,7 @@
 import CustomButton from "@/components/CustomButton";
 import CustomInput from "@/components/CustomInput";
-import { createUser } from "@/lib/appwrite";
+import { createUser } from "@/lib/supabase";
+import useAuthStore from "@/store/auth.store";
 import { AntDesign } from "@expo/vector-icons";
 import { Link, router } from "expo-router";
 import React, { useState } from "react";
@@ -12,6 +13,7 @@ export default function SignUp() {
   const [error, setError] = useState("");
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { setUser, setIsAuthenticated } = useAuthStore();
 
   const [form, setForm] = useState({
     name: "",
@@ -39,12 +41,15 @@ export default function SignUp() {
     setIsSubmitting(true);
 
     try {
-      await createUser({
+      const result = await createUser({
         name,
         username,
         email,
         password,
       });
+
+      setUser(result as any);
+      setIsAuthenticated(true);
 
       router.replace("/");
     } catch (err: any) {
