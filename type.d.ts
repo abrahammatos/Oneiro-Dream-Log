@@ -18,6 +18,12 @@ export interface User {
   streak: number;
   bedtime?: string;
   settings?: AppSettings;
+  profile?: {
+    is_pro: boolean;
+    username?: string;
+    avatar?: string;
+    // Adicione outros campos que vêm do banco se precisar
+  };
 }
 
 export interface Profile {
@@ -66,6 +72,9 @@ export interface Dream {
   hasLiked: boolean;
   commentsCount: number;
   language?: string;
+  mood?: "happy" | "sad" | "neutral" | "scared" | "excited";
+  isLucid?: boolean;
+  analysis?: string;
 }
 
 interface CustomInputProps {

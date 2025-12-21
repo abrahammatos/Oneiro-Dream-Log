@@ -30,5 +30,25 @@
     "btn_google": "Sign up with Google",
     "already_have_account": "Already have an account?",
     "login_link": "Log in here"
+  },
+
+  "create_dream": {
+    "title": "Record Dream",
+    "dream_title_placeholder": "Dream title (e.g. The Flying Cat)",
+    "dream_description_placeholder": "Describe what happened... colors, feelings, people.",
+    "cover_title": "Dream Cover",
+    "cover_pro_only": "Pro users can generate AI covers.",
+    "cover_generate": "Generate AI Cover",
+    "unlock_ai": "Unlock AI",
+    "mood_title": "How did you feel?",
+    "lucid_title": "Lucid Dream?",
+    "lucid_subtitle": "Did you know you were dreaming?",
+    "public": "Public",
+    "private": "Private",
+    "save": "Save Dream",
+    "pro_feature_title": "Pro Feature",
+    "pro_feature_desc": "AI image generation is exclusive to Premium users.",
+    "fill_title_desc": "Please add a title and a description.",
+    "save_error": "Failed to save the dream."
   }
 }

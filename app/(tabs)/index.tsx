@@ -7,10 +7,10 @@ import { fetchDreamsFeed, toggleDreamLike } from "@/services/dreamService";
 import useAuthStore from "@/store/auth.store";
 import { Dream } from "@/type";
 import { FlashList } from "@shopify/flash-list";
-import { useCallback, useEffect, useState } from "react";
+import { useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
 import { ActivityIndicator, RefreshControl, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
 const PAGE_SIZE = 10;
 
 export default function Index() {
@@ -66,10 +66,12 @@ export default function Index() {
 
   // --- Efeitos ---
 
-  useEffect(() => {
-    loadDreams(0, true, "recent");
-  }, [user?.id, i18n.language]); // Recarrega se mudar o idioma
-
+  useFocusEffect(
+    useCallback(() => {
+      // Toda vez que a tela ganhar foco, recarrega a primeira página
+      loadDreams(0, true, filter);
+    }, [user?.id, filter, i18n.language]) // Dependências
+  );
   // ... (Restante do código: handleFilterChange, handleToggleLike, etc, continua igual)
 
   // ... Mantendo o restante do código igual para economizar espaço ...
@@ -85,23 +87,27 @@ export default function Index() {
   };
 
   const handleToggleLike = async (dreamId: string) => {
-    if (!isAuthenticated || !user?.id) return;
+    // 1. Atualização Otimista (Visual Imediato)
     setDreams((currentDreams) =>
       currentDreams.map((dream) => {
         if (dream.id === dreamId) {
-          const isLiking = !dream.hasLiked;
+          const isLikingNow = !dream.hasLiked;
           return {
             ...dream,
-            hasLiked: isLiking,
-            likes: isLiking ? dream.likes + 1 : dream.likes - 1,
+            hasLiked: isLikingNow,
+            // Se curtiu, soma 1. Se descurtiu, subtrai 1.
+            likes: isLikingNow ? dream.likes + 1 : dream.likes - 1,
           };
         }
         return dream;
       })
     );
+
+    // 2. Chama o Backend (Silencioso)
     try {
-      await toggleDreamLike(dreamId, user.id);
+      await toggleDreamLike(dreamId, user!.id);
     } catch (error) {
+      // Se der erro, reverte a mudança visual (opcional)
       console.error(error);
     }
   };

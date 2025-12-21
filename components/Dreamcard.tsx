@@ -1,6 +1,7 @@
 import { Dream } from "@/type";
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import { router } from "expo-router";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
 // Adicionamos a prop onToggleLike na tipagem
@@ -15,7 +16,9 @@ export const DreamCard = ({ item, onToggleLike }: DreamCardProps) => {
       <TouchableOpacity
         activeOpacity={0.9}
         className="card mb-4 mx-4 bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-gray-100 dark:border-dream-dark shadow-sm"
-        onPress={() => console.log("Navegar para detalhes", item.id)}
+        onPress={() =>
+          router.push({ pathname: `/dream/[id]`, params: { id: item.id } })
+        }
       >
         {/* Imagem do Sonho (Se houver) */}
         {item.imageUrl && (

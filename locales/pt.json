@@ -30,5 +30,25 @@
     "btn_google": "Cadastrar com Google",
     "already_have_account": "Já tem uma conta?",
     "login_link": "Entre aqui"
+  },
+
+  "create_dream": {
+    "title": "Registrar Sonho",
+    "dream_title_placeholder": "Título do sonho (ex: O Gato Voador)",
+    "dream_description_placeholder": "Descreva o que aconteceu... cores, sentimentos, pessoas.",
+    "cover_title": "Capa do Sonho",
+    "cover_pro_only": "Usuários Pro podem gerar capas com IA.",
+    "cover_generate": "Gerar Capa IA",
+    "unlock_ai": "Desbloquear IA",
+    "mood_title": "Como você se sentiu?",
+    "lucid_title": "Sonho Lúcido?",
+    "lucid_subtitle": "Você sabia que estava sonhando?",
+    "public": "Público",
+    "private": "Privado",
+    "save": "Salvar Sonho",
+    "pro_feature_title": "Recurso Pro",
+    "pro_feature_desc": "A geração de capas com IA é exclusiva para usuários Premium.",
+    "fill_title_desc": "Por favor, adicione um título e uma descrição.",
+    "save_error": "Falha ao salvar o sonho."
   }
 }
