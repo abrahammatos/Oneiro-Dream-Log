@@ -1,5 +1,6 @@
 import { ImageIcon, Lock, Wand2, X } from "lucide-react-native";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   Alert,
@@ -26,15 +27,22 @@ export function ImageGenerator({
   onGenerate,
   onClear,
 }: ImageGeneratorProps) {
+  const { t } = useTranslation();
+
   const handlePress = () => {
     if (!isPro) {
-      Alert.alert("Premium", "Assine o Pro para gerar capas incríveis com IA!");
+      Alert.alert(
+        t("create_dream.pro_feature_title"),
+        t("create_dream.pro_feature_desc")
+      );
       return;
     }
+
     if (!canGenerate) {
-      Alert.alert("Ops", "Preencha o título e a descrição do sonho primeiro.");
+      Alert.alert(t("common.ops"), t("create_dream.fill_title_desc"));
       return;
     }
+
     onGenerate();
   };
 
@@ -45,7 +53,7 @@ export function ImageGenerator({
         <View className="flex-row items-center">
           <ImageIcon size={14} color="#6B7280" className="mr-1" />
           <Text className="text-sm font-bold text-gray-500">
-            Capa do Sonho (IA)
+            {t("create_dream.cover_title_ai")}
           </Text>
         </View>
 
@@ -76,12 +84,11 @@ export function ImageGenerator({
           </TouchableOpacity>
         </View>
       ) : (
-        /* Área vazia */
-        <View className="min-h-[180px]  bg-gray-50 dark:bg-dream-dark border-2 border-dashed border-gray-200 rounded-2xl p-6 items-center justify-center">
+        <View className="min-h-[180px] bg-gray-50 dark:bg-dream-dark border-2 border-dashed border-gray-200 rounded-2xl p-6 items-center justify-center">
           <Text className="text-xs text-gray-400 text-center mb-4 max-w-[200px]">
             {isPro
-              ? "A IA lerá seu sonho e criará uma arte única."
-              : "Desbloqueie o poder do Gemini para visualizar seus sonhos."}
+              ? t("create_dream.cover_ai_description")
+              : t("create_dream.cover_unlock_description")}
           </Text>
 
           <TouchableOpacity
@@ -114,7 +121,9 @@ export function ImageGenerator({
                     isPro ? "text-indigo-600" : "text-gray-500"
                   }`}
                 >
-                  {isPro ? "Gerar Capa Mágica" : "Desbloquear Criação"}
+                  {isPro
+                    ? t("create_dream.cover_generate_magic")
+                    : t("create_dream.cover_unlock_button")}
                 </Text>
               </>
             )}

@@ -22,6 +22,7 @@ export interface User {
     is_pro: boolean;
     username?: string;
     avatar?: string;
+    streak: number;
     // Adicione outros campos que vêm do banco se precisar
   };
 }

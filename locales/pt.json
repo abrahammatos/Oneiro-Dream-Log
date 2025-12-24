@@ -34,11 +34,17 @@
 
   "create_dream": {
     "title": "Registrar Sonho",
+    "title_edit_dream": "Editar Sonho",
     "dream_title_placeholder": "Título do sonho (ex: O Gato Voador)",
     "dream_description_placeholder": "Descreva o que aconteceu... cores, sentimentos, pessoas.",
     "cover_title": "Capa do Sonho",
     "cover_pro_only": "Usuários Pro podem gerar capas com IA.",
     "cover_generate": "Gerar Capa IA",
+    "cover_title_ai": "Capa do Sonho (IA)",
+    "cover_ai_description": "A IA lerá seu sonho e criará uma arte única.",
+    "cover_unlock_description": "Desbloqueie o poder do Gemini para visualizar seus sonhos.",
+    "cover_generate_magic": "Gerar Capa Mágica",
+    "cover_unlock_button": "Desbloquear Criação",
     "unlock_ai": "Desbloquear IA",
     "mood_title": "Como você se sentiu?",
     "lucid_title": "Sonho Lúcido?",
@@ -46,9 +52,25 @@
     "public": "Público",
     "private": "Privado",
     "save": "Salvar Sonho",
+    "editSave": "Salvar Alterações",
     "pro_feature_title": "Recurso Pro",
     "pro_feature_desc": "A geração de capas com IA é exclusiva para usuários Premium.",
     "fill_title_desc": "Por favor, adicione um título e uma descrição.",
     "save_error": "Falha ao salvar o sonho."
+  },
+  "dream_detail": {
+    "share_message": "Sonho: {{title}}",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "comments": "Comentários",
+    "no_comments": "Nenhum comentário ainda.",
+    "comment_placeholder": "Escreva seu pensamento..."
+  },
+  "dream_analysis": {
+    "subtitle": "Interpretação dos Símbolos",
+    "description": "Descubra os significados ocultos deste sonho através da nossa inteligência artificial.",
+    "reveal": "Revelar Significado",
+    "unlock_pro": "Desbloquear (Pro)",
+    "pro_required": "Recurso Premium necessário"
   }
 }

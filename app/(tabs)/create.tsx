@@ -149,7 +149,9 @@ export default function CreateScreen() {
               <ArrowLeft size={24} color="#6B7280" />
             </TouchableOpacity>
             <Text className="text-xl font-bold text-gray-900 dark:text-white">
-              {isEditing ? "Editar Sonho" : t("create_dream.title")}
+              {isEditing
+                ? t("create_dream.title_edit_dream")
+                : t("create_dream.title")}
             </Text>
           </View>
 
@@ -230,7 +232,9 @@ export default function CreateScreen() {
               <ActivityIndicator color="white" />
             ) : (
               <Text className="text-white font-bold text-lg">
-                {isEditing ? "Salvar Alterações" : t("create_dream.save")}
+                {isEditing
+                  ? t("create_dream.editSave")
+                  : t("create_dream.save")}
               </Text>
             )}
           </TouchableOpacity>

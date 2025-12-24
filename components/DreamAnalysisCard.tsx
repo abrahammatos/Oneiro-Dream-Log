@@ -1,6 +1,7 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { Lock, Sparkles } from "lucide-react-native";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 
@@ -17,10 +18,12 @@ export function DreamAnalysisCard({
   isPro,
   onAnalyze,
 }: Props) {
+  const { t } = useTranslation();
+
   const handlePress = () => {
     if (!isPro) {
       // Você pode disparar um alerta ou modal de upgrade aqui
-      alert("Recurso Premium necessário");
+      alert(t("dream_analysis.pro_required"));
       return;
     }
     onAnalyze();
@@ -42,7 +45,7 @@ export function DreamAnalysisCard({
             <View>
               <Text className="text-white font-bold text-lg">Oneiro AI</Text>
               <Text className="text-indigo-100 text-xs">
-                Interpretação dos Símbolos
+                {t("dream_analysis.subtitle")}
               </Text>
             </View>
           </View>
@@ -56,8 +59,7 @@ export function DreamAnalysisCard({
           ) : (
             <View className="items-center py-2">
               <Text className="text-indigo-100 text-center text-sm mb-6 px-4">
-                Descubra os significados ocultos deste sonho através da nossa
-                inteligência artificial.
+                {t("dream_analysis.description")}
               </Text>
 
               <TouchableOpacity
@@ -78,7 +80,9 @@ export function DreamAnalysisCard({
                       />
                     )}
                     <Text className="text-indigo-700 font-bold text-sm">
-                      {isPro ? "Revelar Significado" : "Desbloquear (Pro)"}
+                      {isPro
+                        ? t("dream_analysis.reveal")
+                        : t("dream_analysis.unlock_pro")}
                     </Text>
                   </>
                 )}

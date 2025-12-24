@@ -35,17 +35,18 @@ import { DreamAnalysisCard } from "@/components/DreamAnalysisCard"; // <--- Seu 
 import { useDreamDetail } from "@/hooks/useDreamDetail"; // <--- Seu novo hook
 import i18n from "@/lib/i18n";
 import useAuthStore from "@/store/auth.store";
+import { useTranslation } from "react-i18next";
 
 export default function DreamDetail() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { user } = useAuthStore();
+  const { t } = useTranslation();
 
   const isPro =
     (user as any)?.profile?.is_pro || (user as any)?.is_pro || false;
 
-  // Usa o Hook criado
   const {
     dream,
     comments,
@@ -58,7 +59,6 @@ export default function DreamDetail() {
     handleRemoveComment,
   } = useDreamDetail(id as string, user);
 
-  // Estados locais apenas de UI
   const [showMenu, setShowMenu] = useState(false);
   const [newComment, setNewComment] = useState("");
   const [sendingComment, setSendingComment] = useState(false);
@@ -70,7 +70,6 @@ export default function DreamDetail() {
     setSendingComment(false);
   };
 
-  // Componente inline simples para botão glass
   const GlassButton = ({ onPress, children }: any) => (
     <TouchableOpacity
       onPress={onPress}
@@ -159,7 +158,7 @@ export default function DreamDetail() {
                 className="text-slate-600 dark:text-slate-300 mr-3"
               />
               <Text className="text-slate-700 dark:text-white font-medium text-sm">
-                Editar
+                {t("dream_detail.edit")}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -167,7 +166,10 @@ export default function DreamDetail() {
               onPress={handleDeleteDream}
             >
               <Trash2 size={16} className="text-red-500 mr-3" />
-              <Text className="text-red-500 font-medium text-sm">Excluir</Text>
+              <Text className="text-red-500 font-medium text-sm">
+                {" "}
+                {t("dream_detail.delete")}
+              </Text>
             </TouchableOpacity>
           </Animated.View>
         )}
@@ -201,7 +203,7 @@ export default function DreamDetail() {
 
             {/* METADADOS */}
             <View>
-              <Text className="text-[34px] font-extrabold text-slate-900 dark:text-white mb-4 leading-[1.1]">
+              <Text className="text-3xl pt-5 font-extrabold text-slate-900 dark:text-white mb-4 leading-[1.1]">
                 {dream.title}
               </Text>
               <View className="flex-row items-center mb-4">
@@ -244,10 +246,10 @@ export default function DreamDetail() {
             </View>
 
             {/* DESCRIÇÃO E TAGS */}
-            <Text className="text-slate-600 dark:text-slate-300 text-[18px] leading-[1.8] font-normal">
+            <Text className="text-slate-600 dark:text-slate-300 text- leading-[1.8] font-normal">
               {dream.description}
             </Text>
-            <View className="flex-row flex-wrap gap-2">
+            <View className="flex-row flex-wrap gap-2 pt-1">
               {dream.tags?.map((t: string, i: number) => (
                 <View
                   key={i}
@@ -273,7 +275,7 @@ export default function DreamDetail() {
               <View className="flex-row items-center mb-6 space-x-2">
                 <MessageCircle size={18} className="text-slate-400" />
                 <Text className="text-slate-900 dark:text-white font-bold text-lg">
-                  Comentários{" "}
+                  {t("dream_detail.comments")}
                   <Text className="text-slate-400 font-normal">
                     ({comments.length})
                   </Text>
@@ -317,7 +319,7 @@ export default function DreamDetail() {
                         className="mt-2 ml-2 self-start"
                       >
                         <Text className="text-[10px] font-bold text-red-500 opacity-80">
-                          Excluir
+                          {t("dream_detail.delete")}
                         </Text>
                       </TouchableOpacity>
                     )}
@@ -328,7 +330,7 @@ export default function DreamDetail() {
               {comments.length === 0 && (
                 <View className="py-10 items-center justify-center opacity-50">
                   <Text className="text-slate-400 text-sm">
-                    Nenhum comentário ainda.
+                    {t("dream_detail.no_comments")}
                   </Text>
                 </View>
               )}
@@ -344,7 +346,7 @@ export default function DreamDetail() {
         >
           <View className="px-4 pt-3 flex-row items-center space-x-3">
             <TextInput
-              placeholder="Escreva seu pensamento..."
+              placeholder={t("dream_detail.comment_placeholder")}
               placeholderTextColor="#94a3b8"
               value={newComment}
               onChangeText={setNewComment}

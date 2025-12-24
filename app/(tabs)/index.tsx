@@ -151,7 +151,7 @@ export default function Index() {
         }
         ListHeaderComponent={() => (
           <View>
-            <HeaderHome streak={user?.streak || 0} />
+            <HeaderHome streak={user?.profile?.streak ?? 0} />
             <RealityCheckWidget />
             <Filter activeFilter={filter} onChangeFilter={handleFilterChange} />
           </View>
