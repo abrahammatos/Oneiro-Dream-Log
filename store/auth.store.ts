@@ -12,10 +12,15 @@ type AuthState = {
   setLoading: (loading: boolean) => void;
 
   fetchAuthenticatedUser: () => Promise<void>;
-  logout: () => Promise<void>; // Nova função tipada
+
+  // 👇 Mudança 1: Renomeado de logout para signOut (padrão Supabase)
+  signOut: () => Promise<void>;
+
+  // 👇 Mudança 2: Adicionada a função refreshSession
+  refreshSession: () => Promise<void>;
 };
 
-const useAuthStore = create<AuthState>((set) => ({
+const useAuthStore = create<AuthState>((set, get) => ({
   isAuthenticated: false,
   user: null,
   isLoading: true,
@@ -43,13 +48,24 @@ const useAuthStore = create<AuthState>((set) => ({
     }
   },
 
-  logout: async () => {
+  // 👇 Nova função: Serve para atualizar os dados do usuário na tela
+  // sem precisar fazer logout/login de novo. Útil após editar perfil.
+  refreshSession: async () => {
+    try {
+      const user = await getCurrentUser();
+      if (user) {
+        set({ user: user as unknown as User });
+      }
+    } catch (error) {
+      console.log("Erro ao recarregar sessão", error);
+    }
+  },
+
+  // 👇 Renomeado para signOut para bater com a tela de Profile
+  signOut: async () => {
     set({ isLoading: true });
     try {
-      // 1. Limpa a sessão no Supabase e no AsyncStorage
       await supabase.auth.signOut();
-
-      // 2. Limpa o estado global do App
       set({ user: null, isAuthenticated: false });
     } catch (error) {
       console.log("Logout error", error);

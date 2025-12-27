@@ -74,5 +74,81 @@
     "reveal": "Reveal Meaning",
     "unlock_pro": "Unlock (Pro)",
     "pro_required": "Premium feature required"
+  },
+  "common": {
+    "success": "Success",
+    "error": "Error",
+    "cancel": "Cancel"
+  },
+
+  "profile": {
+    "title": "Profile",
+    "tabs": {
+      "overview": "Overview",
+      "dreams": "My Dreams"
+    },
+    "pro": {
+      "title": "Go Oneiro Pro",
+      "subtitle": "Unlimited AI & Backups"
+    },
+    "avatar_changes": "Changes today: {{used}}/{{total}}",
+    "avatar_presets": "Presets",
+    "default_username": "Dreamer",
+    "export": "Export Data (JSON)",
+    "logout": "Log Out",
+    "alerts": {
+      "avatar_limit_title": "Daily Limit",
+      "avatar_limit_desc": "You have already changed your photo {{count}} times today.",
+      "upload_failed": "Image upload failed.",
+      "profile_updated": "Profile updated!",
+      "export_failed": "Export failed.",
+      "generic_error": "Something went wrong."
+    },
+    "export_title": "Oneiro Export",
+    "logout_title": "Log Out",
+    "logout_desc": "Do you want to disconnect?",
+    "logout_confirm": "Log Out"
+  },
+
+  "stats": {
+    "dreams": "Dreams",
+    "streak": "Streak",
+    "sleep_goal": "Sleep Goal",
+    "sleep_hint": "To remember better",
+    "achievements": "Achievements"
+  },
+  "achievements": {
+    "first_dream": "First Dream",
+    "dreamer": "Dreamer",
+    "visionary": "Visionary",
+    "lucid": "Lucid",
+    "traveler": "Traveler",
+    "master": "Master"
+  },
+
+  "settings": {
+    "title": "Settings",
+    "preferences": "Preferences",
+    "light_mode": "Light Mode",
+    "dark_mode": "Dark Mode",
+    "notifications": "Notifications",
+    "notifications_desc": "Daily reminders",
+    "sleep_time": "Bedtime",
+    "sleep_time_desc": "Reminder time",
+    "language": "Language",
+    "account": "Account",
+    "privacy": "Privacy Policy",
+    "logout": "Log Out",
+    "logout_title": "Log Out",
+    "logout_confirm": "Are you sure you want to log out?",
+    "danger_zone": "Danger Zone",
+    "delete_account": "Delete My Account",
+    "delete_warning": "Are you sure? All your dreams will be deleted.",
+    "choose_language": "Choose Language"
+  },
+  "languages": {
+    "en": "English",
+    "pt": "Portuguese",
+    "es": "Spanish"
   }
 }

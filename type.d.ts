@@ -12,12 +12,20 @@ export type InteractionType = "like" | "bookmark";
 export interface User {
   id: string;
   name: string;
+  email?: string;
   username: string;
   avatar: string;
   isPro: boolean;
   streak: number;
   bedtime?: string;
   settings?: AppSettings;
+  user_metadata?: {
+    avatar_url?: string;
+    username?: string;
+    is_pro?: boolean;
+    // Permite qualquer outro campo extra que o Supabase mandar
+    [key: string]: any;
+  };
   profile?: {
     is_pro: boolean;
     username?: string;

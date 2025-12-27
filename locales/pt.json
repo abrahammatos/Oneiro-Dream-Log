@@ -72,5 +72,79 @@
     "reveal": "Revelar Significado",
     "unlock_pro": "Desbloquear (Pro)",
     "pro_required": "Recurso Premium necessário"
+  },
+  "common": {
+    "success": "Sucesso",
+    "error": "Erro",
+    "cancel": "Cancelar"
+  },
+  "profile": {
+    "title": "Perfil",
+    "tabs": {
+      "overview": "Visão Geral",
+      "dreams": "Meus Sonhos"
+    },
+    "pro": {
+      "title": "Vire Oneiro Pro",
+      "subtitle": "IA Ilimitada e Backups"
+    },
+    "avatar_changes": "Alterações hoje: {{used}}/{{total}}",
+    "avatar_presets": "Padrões",
+    "default_username": "Sonhador",
+    "export": "Exportar Dados (JSON)",
+    "logout": "Sair do App",
+    "alerts": {
+      "avatar_limit_title": "Limite Diário",
+      "avatar_limit_desc": "Você já trocou de foto {{count}} vezes hoje.",
+      "upload_failed": "Falha no upload da imagem.",
+      "profile_updated": "Perfil atualizado!",
+      "export_failed": "Falha ao exportar.",
+      "generic_error": "Algo deu errado."
+    },
+    "export_title": "Exportação Oneiro",
+    "logout_title": "Sair",
+    "logout_desc": "Deseja desconectar?",
+    "logout_confirm": "Sair"
+  },
+
+  "stats": {
+    "dreams": "Sonhos",
+    "streak": "Sequência",
+    "sleep_goal": "Meta de Sono",
+    "sleep_hint": "Para lembrar melhor",
+    "achievements": "Conquistas"
+  },
+  "achievements": {
+    "first_dream": "Primeiro Sonho",
+    "dreamer": "Sonhador",
+    "visionary": "Visionário",
+    "lucid": "Lúcido",
+    "traveler": "Viajante",
+    "master": "Mestre"
+  },
+
+  "settings": {
+    "title": "Configurações",
+    "preferences": "Preferências",
+    "light_mode": "Modo Claro",
+    "dark_mode": "Modo Escuro",
+    "notifications": "Notificações",
+    "notifications_desc": "Lembretes diários",
+    "sleep_time": "Hora de Dormir",
+    "sleep_time_desc": "Horário do lembrete",
+    "language": "Idioma",
+    "account": "Conta",
+    "privacy": "Política de Privacidade",
+    "logout": "Sair da Conta",
+    "logout_title": "Sair",
+    "logout_confirm": "Tem certeza que deseja desconectar?",
+    "danger_zone": "Zona de Perigo",
+    "delete_account": "Excluir Minha Conta",
+    "delete_warning": "Tem certeza? Todos os seus sonhos serão perdidos.",
+    "choose_language": "Escolha o Idioma"
+  },
+  "languages": {
+    "en": "English",
+    "pt": "Português"
   }
 }
