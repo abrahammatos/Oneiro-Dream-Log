@@ -146,5 +146,38 @@
   "languages": {
     "en": "English",
     "pt": "Português"
+  },
+
+  "analysis": {
+    "title": "Análise",
+    "subtitle": "Deep Insights",
+    "lucid": "Lucidez",
+    "dreams": "Sonhos",
+    "recent_frequency": "Frequência Recente",
+    "mood": "Humor Predominante",
+    "routine": "Rotina de Registro",
+    "themes": "Temas Recorrentes",
+    "empty": "Registre seus primeiros sonhos para desbloquear a análise.",
+    "positive": "Positivo",
+    "nightmare": "Desafiador",
+    "morning": "Manhã",
+    "night": "Noite",
+    "basedOnTime": "Baseado no horário que você salva o sonho.",
+    "noData": "Sem dados suficientes."
+  },
+  "proOverlay": {
+    "title": "Desbloqueie o Seu Subconsciente",
+    "description": "Visualize padrões ocultos, acompanhe sua rotina de sono e tenha acesso a todas as métricas avançadas com o Oneiro Pro.",
+    "cta": "Seja Pro Agora",
+    "cancel": "Talvez depois"
+  },
+  "days": {
+    "sun": "Dom",
+    "mon": "Seg",
+    "tue": "Ter",
+    "wed": "Qua",
+    "thu": "Qui",
+    "fri": "Sex",
+    "sat": "Sáb"
   }
 }

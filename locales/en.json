@@ -148,7 +148,39 @@
   },
   "languages": {
     "en": "English",
-    "pt": "Portuguese",
-    "es": "Spanish"
+    "pt": "Portuguese"
+  },
+
+  "analysis": {
+    "title": "Analysis",
+    "subtitle": "Deep Insights",
+    "lucid": "Lucidity",
+    "dreams": "Dreams",
+    "recent_frequency": "Recent Frequency",
+    "mood": "Predominant Mood",
+    "routine": "Logging Routine",
+    "themes": "Recurring Themes",
+    "empty": "Log your first dreams to unlock analysis.",
+    "positive": "Positive",
+    "nightmare": "Challenging",
+    "morning": "Morning",
+    "night": "Night",
+    "basedOnTime": "Based on the time you record the dream.",
+    "noData": "Not enough data."
+  },
+  "proOverlay": {
+    "title": "Unlock Your Subconscious",
+    "description": "Discover hidden patterns, track your sleep routine, and get access to all advanced metrics with Oneiro Pro.",
+    "cta": "Go Pro Now",
+    "cancel": "Maybe later"
+  },
+  "days": {
+    "sun": "Sun",
+    "mon": "Mon",
+    "tue": "Tue",
+    "wed": "Wed",
+    "thu": "Thu",
+    "fri": "Fri",
+    "sat": "Sat"
   }
 }
