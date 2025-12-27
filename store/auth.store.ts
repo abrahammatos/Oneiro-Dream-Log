@@ -13,11 +13,11 @@ type AuthState = {
 
   fetchAuthenticatedUser: () => Promise<void>;
 
-  // 👇 Mudança 1: Renomeado de logout para signOut (padrão Supabase)
-  signOut: () => Promise<void>;
-
-  // 👇 Mudança 2: Adicionada a função refreshSession
+  // 👇 As duas funções de atualização (mantive ambas para compatibilidade)
+  refreshUser: () => Promise<void>;
   refreshSession: () => Promise<void>;
+
+  signOut: () => Promise<void>;
 };
 
 const useAuthStore = create<AuthState>((set, get) => ({
@@ -33,6 +33,7 @@ const useAuthStore = create<AuthState>((set, get) => ({
     set({ isLoading: true });
 
     try {
+      // getCurrentUser busca tanto Auth quanto a tabela Profiles (onde está o isPro)
       const user = await getCurrentUser();
 
       if (user) {
@@ -48,8 +49,7 @@ const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
-  // 👇 Nova função: Serve para atualizar os dados do usuário na tela
-  // sem precisar fazer logout/login de novo. Útil após editar perfil.
+  // 👇 Função usada para atualizar dados sem loading full (ex: editar perfil)
   refreshSession: async () => {
     try {
       const user = await getCurrentUser();
@@ -61,7 +61,23 @@ const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
-  // 👇 Renomeado para signOut para bater com a tela de Profile
+  // 👇 AQUI ESTAVA O ERRO: Agora usamos a lógica correta
+  // Essa função é chamada pelo Paywall para atualizar o status Pro
+  refreshUser: async () => {
+    try {
+      // Não usamos supabase.auth.getUser() aqui, pois ele não traz o 'is_pro'
+      // Usamos getCurrentUser() que traz tudo.
+      const user = await getCurrentUser();
+
+      if (user) {
+        // Atualiza o estado com o usuário novo (agora com isPro: true)
+        set({ user: user as unknown as User });
+      }
+    } catch (error) {
+      console.log("Erro ao dar refresh no usuário:", error);
+    }
+  },
+
   signOut: async () => {
     set({ isLoading: true });
     try {

@@ -37,7 +37,7 @@ export const ProOverlay = () => {
         </Text>
 
         <TouchableOpacity
-          onPress={() => router.push("/settings")}
+          onPress={() => router.push("/paywall")}
           activeOpacity={0.9}
           className="w-full shadow-xl shadow-orange-500/30"
         >
