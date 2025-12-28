@@ -48,7 +48,7 @@ export default function ProfileScreen() {
   return (
     <SafeAreaView className="flex-1 bg-gray-50 dark:bg-slate-950">
       <ScrollView
-        contentContainerStyle={{ paddingBottom: 100 }}
+        contentContainerStyle={{ paddingBottom: 100, paddingVertical: 20 }}
         refreshControl={
           <RefreshControl
             refreshing={profile.refreshing}

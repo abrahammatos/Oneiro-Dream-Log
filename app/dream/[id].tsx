@@ -44,8 +44,7 @@ export default function DreamDetail() {
   const { user } = useAuthStore();
   const { t } = useTranslation();
 
-  const isPro =
-    (user as any)?.profile?.is_pro || (user as any)?.is_pro || false;
+  const isPro = user?.profile?.is_pro || false;
 
   const {
     dream,

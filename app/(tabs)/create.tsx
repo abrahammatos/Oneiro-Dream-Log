@@ -1,5 +1,5 @@
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
-import { ArrowLeft, Sparkles } from "lucide-react-native";
+import { ArrowLeft, Sparkles, Tag, X } from "lucide-react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -20,7 +20,9 @@ import { ImageGenerator } from "@/components/ImageGenerator";
 import { MoodSelector } from "@/components/MoodSelector";
 import { VisibilitySelector } from "@/components/VisibilitySelector";
 import { useCreateDream } from "@/hooks/useCreateDream";
+import i18n from "@/lib/i18n";
 import { supabase } from "@/lib/supabase";
+import { aiService } from "@/services/ai.service";
 
 export default function CreateScreen() {
   const router = useRouter();
@@ -43,22 +45,20 @@ export default function CreateScreen() {
 
   const [isSavingEdit, setIsSavingEdit] = useState(false);
 
-  // 1. GARANTE A LIMPEZA AO ENTRAR/SAIR
-  // O useFocusEffect roda toda vez que a tela ganha foco
+  // --- ESTADOS PARA TAGS ---
+  const [tags, setTags] = useState<string[]>([]);
+  const [isGeneratingTags, setIsGeneratingTags] = useState(false);
+  const [newTagInput, setNewTagInput] = useState("");
+
+  // 1. LIMPEZA AO ENTRAR/SAIR
   useFocusEffect(
     useCallback(() => {
-      // Se NÃO for edição (é um sonho novo), limpamos o formulário
-      // para garantir que não tenha lixo de um sonho anterior.
+      // Se for um novo sonho, limpa tudo para não ter lixo de memória
       if (!isEditing) {
         resetForm();
+        setTags([]);
       }
-
-      // Cleanup opcional ao sair da tela
-      return () => {
-        // Se desejar limpar sempre que sair, descomente abaixo:
-        // resetForm();
-      };
-    }, [isEditing]) // Roda quando o modo muda
+    }, [isEditing])
   );
 
   // 2. PREENCHE DADOS SE FOR EDIÇÃO
@@ -72,18 +72,92 @@ export default function CreateScreen() {
       if (params.visibility)
         updateForm("visibility", params.visibility as "public" | "private");
       updateForm("isLucid", params.isLucid === "true");
-    }
-    // Se não for edição, o useFocusEffect acima já limpou tudo.
-  }, [dreamIdToEdit]); // Roda apenas se o ID mudar
 
+      // Tenta recuperar as tags vindas da navegação
+      if (params.tags) {
+        try {
+          // As tags podem vir como string JSON ou array direto dependendo do router
+          const parsedTags =
+            typeof params.tags === "string"
+              ? JSON.parse(params.tags)
+              : params.tags;
+          if (Array.isArray(parsedTags)) setTags(parsedTags);
+        } catch (e) {
+          console.log("Erro ao carregar tags na edição", e);
+        }
+      }
+    }
+  }, [dreamIdToEdit]);
+
+  // --- GERAR TAGS COM IA ---
+  const handleGenerateTags = async () => {
+    if (!form.description || form.description.length < 10) {
+      Alert.alert(
+        t("attention") || "Atenção",
+        t("create_dream.description_short_for_tags") ||
+          "Escreva uma descrição maior para a IA entender."
+      );
+      return;
+    }
+
+    setIsGeneratingTags(true);
+    try {
+      const currentLanguage = i18n.language || "en";
+
+      const generatedTags = await aiService.generateTagsForDream(
+        form.description,
+        currentLanguage
+      );
+
+      // Adiciona as novas tags sem duplicar as existentes
+      setTags((prev) => Array.from(new Set([...prev, ...generatedTags])));
+    } catch (error) {
+      console.error(error);
+      Alert.alert("Erro", "Falha ao conectar com o oráculo dos sonhos.");
+    } finally {
+      setIsGeneratingTags(false);
+    }
+  };
+
+  // --- GERENCIAMENTO MANUAL DE TAGS ---
+  const addManualTag = () => {
+    if (newTagInput.trim()) {
+      const cleanTag = newTagInput.trim();
+      if (!tags.includes(cleanTag)) {
+        setTags((prev) => [...prev, cleanTag]);
+      }
+      setNewTagInput("");
+    }
+  };
+
+  const removeTag = (tagToRemove: string) => {
+    setTags((prev) => prev.filter((t) => t !== tagToRemove));
+  };
+
+  // --- SALVAR (CRIAÇÃO OU EDIÇÃO) ---
   const handleSave = async () => {
     if (!form.title.trim() || !form.description.trim()) {
       Alert.alert("Ops", "Título e descrição são obrigatórios.");
       return;
     }
 
+    // Consolida todas as tags: Manuais/IA + Humor + Lucidez
+    const finalTags = [
+      ...tags,
+      form.mood,
+      form.isLucid
+        ? i18n.language?.startsWith("pt")
+          ? "Lúcido"
+          : "Lucid"
+        : null,
+    ].filter(Boolean) as string[];
+
+    // Remove duplicatas
+    const uniqueTags = Array.from(new Set(finalTags));
+
     if (isEditing) {
       // --- MODO EDIÇÃO ---
+      // (Mantemos a lógica manual aqui pois o hook é focado em CREATE)
       setIsSavingEdit(true);
       try {
         const { error } = await supabase
@@ -95,18 +169,17 @@ export default function CreateScreen() {
             is_lucid: form.isLucid,
             image_url: form.imageUrl,
             visibility: form.visibility,
-            tags: [form.mood, form.isLucid ? "Lucid" : null].filter(Boolean),
+            tags: uniqueTags,
+            updated_at: new Date().toISOString(),
           })
           .eq("id", dreamIdToEdit);
 
         if (error) throw error;
 
-        // Limpa tudo antes de voltar
+        // Limpeza e Navegação
         resetForm();
-
-        // Zera os params forçadamente para a próxima navegação
+        setTags([]);
         router.setParams({ isEditing: undefined, id: undefined });
-
         router.back();
       } catch (error) {
         console.error("Erro ao editar:", error);
@@ -116,9 +189,12 @@ export default function CreateScreen() {
       }
     } else {
       // --- MODO CRIAÇÃO ---
-      const success = await submitDream();
+      // Usamos o hook refatorado passando as tags e a data atual
+      const success = await submitDream(uniqueTags, new Date());
+
       if (success) {
         resetForm();
+        setTags([]);
         router.back();
       }
     }
@@ -127,7 +203,7 @@ export default function CreateScreen() {
   const isLoading = loading.submit || isSavingEdit;
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-dream-dark">
+    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-slate-950">
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         className="flex-1"
@@ -136,12 +212,14 @@ export default function CreateScreen() {
           contentContainerStyle={{ paddingBottom: 100 }}
           className="p-4"
           showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
         >
           {/* --- Header --- */}
           <View className="flex-row items-center mb-6">
             <TouchableOpacity
               onPress={() => {
-                resetForm(); // Garante limpeza ao cancelar
+                resetForm();
+                setTags([]);
                 router.back();
               }}
               className="p-2 bg-gray-200 dark:bg-white/10 rounded-full mr-4"
@@ -155,7 +233,7 @@ export default function CreateScreen() {
             </Text>
           </View>
 
-          {/* ... O resto do formulário continua igual ... */}
+          {/* Inputs Principais */}
           <View className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-gray-100 dark:border-slate-800 space-y-4 mb-6 shadow-sm">
             <TextInput
               placeholder={t("create_dream.dream_title_placeholder")}
@@ -175,6 +253,90 @@ export default function CreateScreen() {
             />
           </View>
 
+          {/* --- SEÇÃO DE TAGS --- */}
+          <View className="mb-6">
+            <View className="flex-row justify-between items-center mb-2 px-1">
+              <Text className="text-gray-500 dark:text-gray-400 font-bold text-sm">
+                Tags & Temas
+              </Text>
+
+              {/* Botão Gerar com IA */}
+              <TouchableOpacity
+                onPress={handleGenerateTags}
+                disabled={isGeneratingTags || !form.description}
+                className={`flex-row items-center gap-1 px-3 py-1.5 rounded-full ${isGeneratingTags || !form.description ? "bg-gray-100 dark:bg-slate-800" : "bg-indigo-100 dark:bg-indigo-900/50"}`}
+              >
+                {isGeneratingTags ? (
+                  <ActivityIndicator size="small" color="#4F46E5" />
+                ) : (
+                  <>
+                    <Sparkles
+                      size={14}
+                      className={
+                        !form.description
+                          ? "text-gray-400"
+                          : "text-indigo-600 dark:text-indigo-400"
+                      }
+                    />
+                    <Text
+                      className={`text-xs font-bold ${!form.description ? "text-gray-400" : "text-indigo-600 dark:text-indigo-400"}`}
+                    >
+                      {isGeneratingTags ? "Gerando..." : "Gerar com IA"}
+                    </Text>
+                  </>
+                )}
+              </TouchableOpacity>
+            </View>
+
+            {/* Input Manual e Lista */}
+            <View className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm">
+              {/* Input */}
+              <View className="flex-row gap-2 mb-3">
+                <TextInput
+                  value={newTagInput}
+                  onChangeText={setNewTagInput}
+                  placeholder="Adicionar tag manual..."
+                  placeholderTextColor="#9CA3AF"
+                  className="flex-1 bg-gray-50 dark:bg-slate-800 p-2 rounded-lg text-slate-900 dark:text-white text-sm"
+                  onSubmitEditing={addManualTag}
+                  returnKeyType="done"
+                />
+                <TouchableOpacity
+                  onPress={addManualTag}
+                  className="bg-gray-200 dark:bg-slate-700 p-2 rounded-lg items-center justify-center"
+                >
+                  <Tag size={18} className="text-gray-600 dark:text-gray-300" />
+                </TouchableOpacity>
+              </View>
+
+              {/* Chips */}
+              <View className="flex-row flex-wrap gap-2">
+                {tags.length === 0 && (
+                  <Text className="text-gray-400 text-xs italic p-1">
+                    Nenhuma tag selecionada.
+                  </Text>
+                )}
+                {tags.map((tag, index) => (
+                  <View
+                    key={index}
+                    className="flex-row items-center bg-indigo-50 dark:bg-indigo-900/30 px-3 py-1 rounded-full border border-indigo-100 dark:border-indigo-800"
+                  >
+                    <Text className="text-indigo-600 dark:text-indigo-300 text-xs font-bold mr-1 capitalize">
+                      {tag}
+                    </Text>
+                    <TouchableOpacity
+                      onPress={() => removeTag(tag)}
+                      hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                    >
+                      <X size={12} className="text-indigo-400" />
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </View>
+            </View>
+          </View>
+
+          {/* Gerador de Imagem */}
           <ImageGenerator
             imageUrl={form.imageUrl}
             isPro={isPro}
@@ -184,6 +346,7 @@ export default function CreateScreen() {
             canGenerate={!!form.title && !!form.description}
           />
 
+          {/* Seletor de Humor */}
           <View className="mb-6">
             <Text className="text-gray-500 dark:text-gray-400 font-bold text-sm mb-3 ml-1">
               {t("create_dream.mood_title")}
@@ -194,6 +357,7 @@ export default function CreateScreen() {
             />
           </View>
 
+          {/* Switch Sonho Lúcido */}
           <View className="flex-row items-center justify-between p-4 bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 mb-6 shadow-sm">
             <View className="flex-row items-center gap-3">
               <View className="p-2 bg-yellow-100 dark:bg-yellow-900/30 rounded-full">
@@ -217,11 +381,13 @@ export default function CreateScreen() {
             />
           </View>
 
+          {/* Seletor de Visibilidade */}
           <VisibilitySelector
             value={form.visibility}
             onChange={(val) => updateForm("visibility", val)}
           />
 
+          {/* Botão Salvar */}
           <TouchableOpacity
             onPress={handleSave}
             disabled={isLoading}

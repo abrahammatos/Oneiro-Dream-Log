@@ -171,6 +171,22 @@
     "cta": "Seja Pro Agora",
     "cancel": "Talvez depois"
   },
+  "explore": {
+    "title": "Explorar Sonhos",
+    "searchPlaceholder": "Busque sonhos, temas, emoções...",
+    "trending": "Tópicos em Alta",
+    "results": "{{count}} resultados encontrados",
+    "anonymous": "Anônimo",
+    "empty": "Nenhum sonho encontrado no vazio."
+  },
+  "topics": {
+    "fly": "Voo",
+    "nightmare": "Pesadelo",
+    "lucid": "Lúcido",
+    "water": "Água",
+    "fall": "Cair",
+    "animals": "Animais"
+  },
   "days": {
     "sun": "Dom",
     "mon": "Seg",

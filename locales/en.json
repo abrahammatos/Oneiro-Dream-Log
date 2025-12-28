@@ -174,6 +174,22 @@
     "cta": "Go Pro Now",
     "cancel": "Maybe later"
   },
+  "explore": {
+    "title": "Explore Dreams",
+    "searchPlaceholder": "Search dreams, themes, emotions...",
+    "trending": "Trending Topics",
+    "results": "{{count}} results found",
+    "anonymous": "Anonymous",
+    "empty": "No dreams found in the void."
+  },
+  "topics": {
+    "fly": "Flying",
+    "nightmare": "Nightmare",
+    "lucid": "Lucid",
+    "water": "Water",
+    "fall": "Falling",
+    "animals": "Animals"
+  },
   "days": {
     "sun": "Sun",
     "mon": "Mon",

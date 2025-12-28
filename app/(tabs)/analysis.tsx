@@ -44,7 +44,7 @@ export default function AnalysisScreen() {
 
   return (
     <View className="flex-1 bg-gray-50 dark:bg-slate-950">
-      <SafeAreaView className="flex-1">
+      <SafeAreaView className="flex-1 my-6">
         <ScrollView contentContainerStyle={{ paddingBottom: 120 }}>
           {/* HEADER */}
           <View className="px-6 pt-4 mb-8 flex-row items-center justify-between">
